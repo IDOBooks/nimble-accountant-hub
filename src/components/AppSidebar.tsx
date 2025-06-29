@@ -78,14 +78,14 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${
+                        `flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200 text-lg ${
                           isActive
                             ? 'bg-cyan-400 text-violet-900 font-medium shadow-lg'
                             : 'text-white hover:bg-violet-800 hover:text-cyan-100'
                         }`
                       }
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <item.icon className="h-6 w-6 flex-shrink-0" />
                       {!isCollapsed && <span className="truncate">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
@@ -104,14 +104,14 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${
+                        `flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200 text-lg ${
                           isActive
                             ? 'bg-cyan-400 text-violet-900 font-medium'
                             : 'text-white hover:bg-violet-800 hover:text-cyan-100'
                         }`
                       }
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <item.icon className="h-6 w-6 flex-shrink-0" />
                       {!isCollapsed && <span className="truncate">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
