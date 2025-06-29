@@ -3,54 +3,56 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SaaS Accounting Software Design System - Pastel Theme */
+/* iDO Books - SaaS Accounting Software Design System */
 
 @layer base {
   :root {
-    --background: 250 250 253;
-    --foreground: 51 65 85;
+    --background: 248 250 252;
+    --foreground: 30 41 59;
 
     --card: 255 255 255;
-    --card-foreground: 51 65 85;
+    --card-foreground: 30 41 59;
 
     --popover: 255 255 255;
-    --popover-foreground: 51 65 85;
+    --popover-foreground: 30 41 59;
 
-    --primary: 99 102 241;
+    --primary: 139 92 246;
     --primary-foreground: 255 255 255;
 
-    --secondary: 241 245 249;
-    --secondary-foreground: 51 65 85;
+    --secondary: 236 254 255;
+    --secondary-foreground: 30 41 59;
 
-    --muted: 248 250 252;
+    --muted: 241 245 249;
     --muted-foreground: 100 116 139;
 
-    --accent: 219 234 254;
-    --accent-foreground: 30 58 138;
+    --accent: 165 243 252;
+    --accent-foreground: 8 51 68;
 
     --destructive: 239 68 68;
     --destructive-foreground: 255 255 255;
 
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 99 102 241;
+    --border: 203 213 225;
+    --input: 203 213 225;
+    --ring: 6 182 212;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    --sidebar-background: 255 255 255;
-    --sidebar-foreground: 51 65 85;
-    --sidebar-primary: 99 102 241;
+    --sidebar-background: 76 29 149;
+    --sidebar-foreground: 255 255 255;
+    --sidebar-primary: 6 182 212;
     --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 241 245 249;
-    --sidebar-accent-foreground: 51 65 85;
-    --sidebar-border: 226 232 240;
-    --sidebar-ring: 99 102 241;
+    --sidebar-accent: 109 40 217;
+    --sidebar-accent-foreground: 255 255 255;
+    --sidebar-border: 109 40 217;
+    --sidebar-ring: 6 182 212;
 
-    /* Custom accounting colors */
-    --income-color: 34 197 94;
-    --expense-color: 239 68 68;
-    --profit-color: 16 185 129;
-    --vat-color: 147 51 234;
+    /* iDO Brand Colors */
+    --ido-violet: 76 29 149;
+    --ido-cyan: 6 182 212;
+    --ido-light-cyan: 165 243 252;
+    --success-color: 34 197 94;
+    --warning-color: 245 158 11;
+    --error-color: 239 68 68;
   }
 
   .dark {
@@ -60,7 +62,7 @@
     --card-foreground: 226 232 240;
     --popover: 30 41 59;
     --popover-foreground: 226 232 240;
-    --primary: 129 140 248;
+    --primary: 139 92 246;
     --primary-foreground: 15 23 42;
     --secondary: 51 65 85;
     --secondary-foreground: 226 232 240;
@@ -89,13 +91,26 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-gradient-to-br from-violet-50 to-cyan-50 text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
 @layer components {
+  .ido-card {
+    @apply bg-white/90 backdrop-blur-sm border border-violet-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+  
+  .ido-button-primary {
+    @apply bg-gradient-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200;
+  }
+  
+  .ido-button-secondary {
+    @apply bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200;
+  }
+
   .summary-tile {
-    @apply bg-gradient-to-br from-white to-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200;
+    @apply ido-card p-6 hover:scale-105 transition-transform duration-200;
   }
   
   .income-tile {
@@ -115,14 +130,72 @@
   }
 
   .chart-container {
-    @apply bg-white rounded-xl border border-slate-200 p-6 shadow-sm;
+    @apply ido-card p-6;
   }
 
   .nav-item {
-    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200;
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-cyan-100 hover:bg-violet-800 hover:text-white transition-all duration-200;
   }
 
   .nav-item.active {
-    @apply bg-indigo-50 text-indigo-600 border-r-2 border-indigo-500;
+    @apply bg-cyan-400 text-violet-900 font-medium shadow-lg;
   }
+
+  .ido-input {
+    @apply border-violet-200 focus:border-cyan-400 focus:ring-cyan-400 rounded-xl;
+  }
+
+  .ido-select {
+    @apply border-violet-200 focus:border-cyan-400 focus:ring-cyan-400 rounded-xl;
+  }
+}
+
+/* Custom animations for iDO Books */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(241 245 249);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(139 92 246);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(124 58 237);
 }

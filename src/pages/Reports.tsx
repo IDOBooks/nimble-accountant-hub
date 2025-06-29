@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
-import { Download, Calendar, TrendingUp, FileText, PieChart } from 'lucide-react';
+import { Download, FileText, Calculator, TrendingUp, Receipt } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -11,363 +10,248 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const trialBalanceData = [
-  { account: 'Cash', debit: 15420, credit: 0 },
-  { account: 'Bank Account', debit: 45680, credit: 0 },
-  { account: 'Sales Revenue', debit: 0, credit: 125000 },
-  { account: 'Rent Expense', debit: 16800, credit: 0 },
-  { account: 'Utilities', debit: 3420, credit: 0 },
-  { account: 'VAT Payable', debit: 0, credit: 8750 },
-  { account: 'Salaries', debit: 24000, credit: 0 },
-];
+import { Progress } from '@/components/ui/progress';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line
+} from 'recharts';
 
 const profitLossData = [
-  { category: 'Sales Revenue', amount: 125000, type: 'income' },
-  { category: 'Service Revenue', amount: 35000, type: 'income' },
-  { category: 'Rent Expense', amount: 16800, type: 'expense' },
-  { category: 'Salaries', amount: 24000, type: 'expense' },
-  { category: 'Utilities', amount: 3420, type: 'expense' },
-  { category: 'Marketing', amount: 5200, type: 'expense' },
+  { month: 'Jan', profit: 8500 },
+  { month: 'Feb', profit: 6200 },
+  { month: 'Mar', profit: 9800 },
+  { month: 'Apr', profit: 11200 },
+  { month: 'May', profit: 13222 },
+  { month: 'Jun', profit: 12800 }
 ];
 
-const vatReportData = [
-  { description: 'VAT on Sales (20%)', amount: 25000, vat: 5000, type: 'output' },
-  { description: 'VAT on Purchases (20%)', amount: 10000, vat: 2000, type: 'input' },
-  { description: 'VAT on Equipment (20%)', amount: 5000, vat: 1000, type: 'input' },
+const vatData = [
+  { type: 'VAT on Sales', amount: 9200 },
+  { type: 'VAT on Purchases', amount: -6522 },
+  { type: 'Adjustments', amount: 0 }
 ];
 
-const monthlyPLData = [
-  { month: 'Jan', income: 42000, expenses: 35000 },
-  { month: 'Feb', income: 38000, expenses: 32000 },
-  { month: 'Mar', income: 45000, expenses: 38000 },
-  { month: 'Apr', income: 48000, expenses: 41000 },
-  { month: 'May', income: 52000, expenses: 43000 },
-  { month: 'Jun', income: 49000, expenses: 39000 },
+const cashFlowData = [
+  { month: 'Jan', inflow: 42000, outflow: 35000 },
+  { month: 'Feb', inflow: 38000, outflow: 32000 },
+  { month: 'Mar', inflow: 45000, outflow: 38000 },
+  { month: 'Apr', inflow: 48000, outflow: 41000 },
+  { month: 'May', inflow: 52000, outflow: 43000 },
+  { month: 'Jun', inflow: 49000, outflow: 39000 }
 ];
+
+const balanceSheetData = {
+  assets: [
+    { name: 'Cash & Bank', value: 25600 },
+    { name: 'Accounts Receivable', value: 18900 },
+    { name: 'Equipment', value: 45000 },
+    { name: 'Total Assets', value: 89500 }
+  ],
+  liabilities: [
+    { name: 'Accounts Payable', value: 12300 },
+    { name: 'VAT Payable', value: 2678 },
+    { name: 'Loans', value: 25000 },
+    { name: 'Total Liabilities', value: 39978 }
+  ]
+};
 
 export default function Reports() {
-  const [selectedPeriod, setSelectedPeriod] = useState('current-year');
-
-  const totalDebit = trialBalanceData.reduce((sum, item) => sum + item.debit, 0);
-  const totalCredit = trialBalanceData.reduce((sum, item) => sum + item.credit, 0);
-  
-  const totalIncome = profitLossData.filter(item => item.type === 'income').reduce((sum, item) => sum + item.amount, 0);
-  const totalExpenses = profitLossData.filter(item => item.type === 'expense').reduce((sum, item) => sum + item.amount, 0);
-  const netProfit = totalIncome - totalExpenses;
-
-  const vatPayable = vatReportData.filter(item => item.type === 'output').reduce((sum, item) => sum + item.vat, 0);
-  const vatReceivable = vatReportData.filter(item => item.type === 'input').reduce((sum, item) => sum + item.vat, 0);
-  const netVAT = vatPayable - vatReceivable;
+  const [selectedPeriod, setSelectedPeriod] = useState('current-month');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-gradient-to-br from-violet-50 to-cyan-50 min-h-screen p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Reports</h1>
-          <p className="text-slate-600 mt-1">Financial reports and analysis</p>
+          <h1 className="text-3xl font-bold text-violet-900">Financial Reports</h1>
+          <p className="text-violet-600 mt-1">Comprehensive business insights and analysis</p>
         </div>
         <div className="flex gap-3">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
+            <SelectTrigger className="w-48 border-violet-200 focus:border-cyan-400">
+              <SelectValue placeholder="Select period" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="current-month">Current Month</SelectItem>
-              <SelectItem value="current-quarter">Current Quarter</SelectItem>
-              <SelectItem value="current-year">Current Year</SelectItem>
-              <SelectItem value="last-year">Last Year</SelectItem>
+              <SelectItem value="last-month">Last Month</SelectItem>
+              <SelectItem value="quarter">This Quarter</SelectItem>
+              <SelectItem value="year">This Year</SelectItem>
             </SelectContent>
           </Select>
+          <Button className="gap-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl">
+            <Download className="h-4 w-4" />
+            Export All Reports
+          </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="trial-balance" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="trial-balance">Trial Balance</TabsTrigger>
-          <TabsTrigger value="profit-loss">Profit & Loss</TabsTrigger>
-          <TabsTrigger value="vat-report">VAT Report</TabsTrigger>
-          <TabsTrigger value="balance-sheet">Balance Sheet</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="trial-balance" className="space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Trial Balance
-              </CardTitle>
-              <div className="flex gap-2">
-                <Button variant="outline" className="gap-2">
-                  <PieChart className="h-4 w-4" />
-                  View Chart
-                </Button>
-                <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-                  <Download className="h-4 w-4" />
-                  Export
-                </Button>
+      {/* Report Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Trial Balance */}
+        <Card className="bg-white/80 backdrop-blur-sm border-violet-200 shadow-lg rounded-2xl">
+          <CardHeader className="bg-gradient-to-r from-violet-600 to-violet-700 text-white rounded-t-2xl">
+            <CardTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Trial Balance
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center text-sm">
+                <span className="font-medium text-violet-700">Balance Status</span>
+                <Badge className="bg-green-100 text-green-800 border-green-200">Balanced</Badge>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-slate-200">
-                      <th className="text-left py-3 px-4 font-semibold text-slate-700">Account</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-700">Debit (£)</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-700">Credit (£)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {trialBalanceData.map((item, index) => (
-                      <tr key={index} className="border-b hover:bg-slate-50">
-                        <td className="py-3 px-4 font-medium text-slate-900">{item.account}</td>
-                        <td className="py-3 px-4 text-right text-slate-900">
-                          {item.debit > 0 ? `${item.debit.toLocaleString()}` : '-'}
-                        </td>
-                        <td className="py-3 px-4 text-right text-slate-900">
-                          {item.credit > 0 ? `${item.credit.toLocaleString()}` : '-'}
-                        </td>
-                      </tr>
-                    ))}
-                    <tr className="border-t-2 border-slate-300 bg-slate-50 font-bold">
-                      <td className="py-3 px-4 text-slate-900">TOTALS</td>
-                      <td className="py-3 px-4 text-right text-slate-900">{totalDebit.toLocaleString()}</td>
-                      <td className="py-3 px-4 text-right text-slate-900">{totalCredit.toLocaleString()}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              
-              <div className="mt-4 p-4 bg-emerald-50 rounded-lg">
-                <p className="text-sm text-emerald-800">
-                  ✓ Trial Balance is balanced. Total Debits = Total Credits (£{totalDebit.toLocaleString()})
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="profit-loss" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Profit & Loss Statement
-                  </CardTitle>
-                  <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-                    <Download className="h-4 w-4" />
-                    Export
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    {/* Income Section */}
-                    <div>
-                      <h3 className="font-semibold text-lg text-slate-900 mb-3">Income</h3>
-                      {profitLossData.filter(item => item.type === 'income').map((item, index) => (
-                        <div key={index} className="flex justify-between py-2">
-                          <span className="text-slate-700">{item.category}</span>
-                          <span className="font-medium text-emerald-600">£{item.amount.toLocaleString()}</span>
-                        </div>
-                      ))}
-                      <div className="border-t pt-2 flex justify-between font-semibold">
-                        <span>Total Income</span>
-                        <span className="text-emerald-600">£{totalIncome.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    {/* Expenses Section */}
-                    <div>
-                      <h3 className="font-semibold text-lg text-slate-900 mb-3">Expenses</h3>
-                      {profitLossData.filter(item => item.type === 'expense').map((item, index) => (
-                        <div key={index} className="flex justify-between py-2">
-                          <span className="text-slate-700">{item.category}</span>
-                          <span className="font-medium text-red-600">£{item.amount.toLocaleString()}</span>
-                        </div>
-                      ))}
-                      <div className="border-t pt-2 flex justify-between font-semibold">
-                        <span>Total Expenses</span>
-                        <span className="text-red-600">£{totalExpenses.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    {/* Net Profit */}
-                    <div className="border-t-2 border-slate-300 pt-4">
-                      <div className="flex justify-between font-bold text-lg">
-                        <span>Net Profit</span>
-                        <span className={netProfit >= 0 ? 'text-emerald-600' : 'text-red-600'}>
-                          £{netProfit.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Monthly Trend</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={monthlyPLData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip formatter={(value, name) => [`£${value.toLocaleString()}`, name === 'income' ? 'Income' : 'Expenses']} />
-                      <Bar dataKey="income" fill="#22c55e" />
-                      <Bar dataKey="expenses" fill="#ef4444" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="vat-report" className="space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Receipt className="h-5 w-5" />
-                VAT Report
-              </CardTitle>
-              <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Card className="vat-tile">
-                  <CardContent className="p-4 text-center">
-                    <p className="text-sm text-slate-600">VAT on Sales</p>
-                    <p className="text-2xl font-bold text-purple-600">£{vatPayable.toLocaleString()}</p>
-                  </CardContent>
-                </Card>
-                <Card className="vat-tile">
-                  <CardContent className="p-4 text-center">
-                    <p className="text-sm text-slate-600">VAT on Purchases</p>
-                    <p className="text-2xl font-bold text-blue-600">£{vatReceivable.toLocaleString()}</p>
-                  </CardContent>
-                </Card>
-                <Card className="vat-tile">
-                  <CardContent className="p-4 text-center">
-                    <p className="text-sm text-slate-600">Net VAT Due</p>
-                    <p className="text-2xl font-bold text-slate-900">£{netVAT.toLocaleString()}</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-slate-200">
-                      <th className="text-left py-3 px-4 font-semibold text-slate-700">Description</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-700">Net Amount (£)</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-700">VAT Amount (£)</th>
-                      <th className="text-center py-3 px-4 font-semibold text-slate-700">Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vatReportData.map((item, index) => (
-                      <tr key={index} className="border-b hover:bg-slate-50">
-                        <td className="py-3 px-4 text-slate-900">{item.description}</td>
-                        <td className="py-3 px-4 text-right text-slate-900">£{item.amount.toLocaleString()}</td>
-                        <td className="py-3 px-4 text-right text-slate-900">£{item.vat.toLocaleString()}</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            item.type === 'output' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
-                          }`}>
-                            {item.type === 'output' ? 'Output VAT' : 'Input VAT'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="balance-sheet" className="space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Balance Sheet
-              </CardTitle>
-              <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Assets */}
+              <Progress value={100} className="h-2" />
+              <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <h3 className="font-bold text-lg text-slate-900 mb-4">Assets</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-slate-700">Cash</span>
-                      <span className="font-medium">£15,420</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-700">Bank Account</span>
-                      <span className="font-medium">£45,680</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-700">Equipment</span>
-                      <span className="font-medium">£12,500</span>
-                    </div>
-                    <div className="border-t pt-2 flex justify-between font-semibold">
-                      <span>Total Assets</span>
-                      <span>£73,600</span>
-                    </div>
-                  </div>
+                  <p className="text-violet-600">Total Debits</p>
+                  <p className="font-bold text-violet-900">£78,456</p>
                 </div>
-
-                {/* Liabilities & Equity */}
                 <div>
-                  <h3 className="font-bold text-lg text-slate-900 mb-4">Liabilities & Equity</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-slate-700">VAT Payable</span>
-                      <span className="font-medium">£8,750</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-700">Accounts Payable</span>
-                      <span className="font-medium">£3,200</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-700">Owner's Equity</span>
-                      <span className="font-medium">£61,650</span>
-                    </div>
-                    <div className="border-t pt-2 flex justify-between font-semibold">
-                      <span>Total Liabilities & Equity</span>
-                      <span>£73,600</span>
-                    </div>
-                  </div>
+                  <p className="text-violet-600">Total Credits</p>
+                  <p className="font-bold text-violet-900">£78,456</p>
                 </div>
               </div>
-              
-              <div className="mt-6 p-4 bg-emerald-50 rounded-lg">
-                <p className="text-sm text-emerald-800">
-                  ✓ Balance Sheet is balanced. Total Assets = Total Liabilities & Equity (£73,600)
-                </p>
+              <Button variant="outline" className="w-full mt-4 border-violet-200 text-violet-700 hover:bg-violet-50 rounded-xl">
+                <Download className="h-4 w-4 mr-2" />
+                Export Trial Balance
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Profit & Loss */}
+        <Card className="bg-white/80 backdrop-blur-sm border-violet-200 shadow-lg rounded-2xl">
+          <CardHeader className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-t-2xl">
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Profit & Loss
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">£13,222</p>
+                <p className="text-sm text-violet-600">Net Profit This Month</p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              <ResponsiveContainer width="100%" height={150}>
+                <LineChart data={profitLossData}>
+                  <Line type="monotone" dataKey="profit" stroke="#06b6d4" strokeWidth={3} dot={false} />
+                  <XAxis dataKey="month" hide />
+                  <YAxis hide />
+                  <Tooltip formatter={(value) => [`£${value.toLocaleString()}`, 'Profit']} />
+                </LineChart>
+              </ResponsiveContainer>
+              <Button variant="outline" className="w-full border-violet-200 text-violet-700 hover:bg-violet-50 rounded-xl">
+                <Download className="h-4 w-4 mr-2" />
+                Export P&L Statement
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* VAT Report */}
+        <Card className="bg-white/80 backdrop-blur-sm border-violet-200 shadow-lg rounded-2xl">
+          <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-t-2xl">
+            <CardTitle className="flex items-center gap-2">
+              <Receipt className="h-5 w-5" />
+              VAT Report
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              {vatData.map((item, index) => (
+                <div key={index} className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                  <span className="font-medium text-purple-700">{item.type}</span>
+                  <span className={`font-bold ${item.amount > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                    £{Math.abs(item.amount).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+              <div className="border-t pt-4">
+                <div className="flex justify-between items-center font-bold text-lg">
+                  <span className="text-violet-700">Net VAT Due</span>
+                  <span className="text-violet-900">£2,678</span>
+                </div>
+              </div>
+              <Button variant="outline" className="w-full border-violet-200 text-violet-700 hover:bg-violet-50 rounded-xl">
+                <Download className="h-4 w-4 mr-2" />
+                Export VAT Return
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Balance Sheet */}
+        <Card className="bg-white/80 backdrop-blur-sm border-violet-200 shadow-lg rounded-2xl">
+          <CardHeader className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-t-2xl">
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Balance Sheet
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-emerald-700 mb-2">Assets</h4>
+                  {balanceSheetData.assets.map((item, index) => (
+                    <div key={index} className="flex justify-between text-sm py-1">
+                      <span className="text-violet-600">{item.name}</span>
+                      <span className="font-medium text-violet-900">£{item.value.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-emerald-700 mb-2">Liabilities</h4>
+                  {balanceSheetData.liabilities.map((item, index) => (
+                    <div key={index} className="flex justify-between text-sm py-1">
+                      <span className="text-violet-600">{item.name}</span>
+                      <span className="font-medium text-violet-900">£{item.value.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <Button variant="outline" className="w-full border-violet-200 text-violet-700 hover:bg-violet-50 rounded-xl">
+                <Download className="h-4 w-4 mr-2" />
+                Export Balance Sheet
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Cash Flow Chart */}
+      <Card className="bg-white/80 backdrop-blur-sm border-violet-200 shadow-lg rounded-2xl">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-2xl">
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Cash Flow Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={cashFlowData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="month" stroke="#64748b" />
+              <YAxis stroke="#64748b" />
+              <Tooltip 
+                formatter={(value, name) => [`£${value.toLocaleString()}`, name === 'inflow' ? 'Cash In' : 'Cash Out']}
+                contentStyle={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px' }}
+              />
+              <Bar dataKey="inflow" fill="#06b6d4" name="inflow" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="outflow" fill="#8b5cf6" name="outflow" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 }
