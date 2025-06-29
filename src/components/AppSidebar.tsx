@@ -74,19 +74,19 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="!text-white hover:!bg-violet-800">
                     <NavLink
                       to={item.url}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200 text-lg ${
+                        `flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200 text-lg !text-white ${
                           isActive
-                            ? 'bg-cyan-400 text-violet-900 font-medium shadow-lg'
-                            : 'text-white hover:bg-violet-800 hover:text-cyan-100'
+                            ? '!bg-cyan-400 !text-violet-900 font-medium shadow-lg'
+                            : '!text-white hover:!bg-violet-800 hover:!text-cyan-100'
                         }`
                       }
                     >
-                      <item.icon className="h-6 w-6 flex-shrink-0" />
-                      {!isCollapsed && <span className="truncate">{item.title}</span>}
+                      <item.icon className="h-6 w-6 flex-shrink-0 !text-inherit" />
+                      {!isCollapsed && <span className="truncate !text-inherit">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -100,19 +100,19 @@ export function AppSidebar() {
             <SidebarMenu>
               {bottomItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="!text-white hover:!bg-violet-800">
                     <NavLink
                       to={item.url}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200 text-lg ${
+                        `flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200 text-lg !text-white ${
                           isActive
-                            ? 'bg-cyan-400 text-violet-900 font-medium'
-                            : 'text-white hover:bg-violet-800 hover:text-cyan-100'
+                            ? '!bg-cyan-400 !text-violet-900 font-medium'
+                            : '!text-white hover:!bg-violet-800 hover:!text-cyan-100'
                         }`
                       }
                     >
-                      <item.icon className="h-6 w-6 flex-shrink-0" />
-                      {!isCollapsed && <span className="truncate">{item.title}</span>}
+                      <item.icon className="h-6 w-6 flex-shrink-0 !text-inherit" />
+                      {!isCollapsed && <span className="truncate !text-inherit">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
