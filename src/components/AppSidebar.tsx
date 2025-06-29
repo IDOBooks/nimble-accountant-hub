@@ -81,7 +81,7 @@ export function AppSidebar() {
                         `flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${
                           isActive
                             ? 'bg-cyan-400 text-violet-900 font-medium shadow-lg'
-                            : 'text-cyan-100 hover:bg-violet-800 hover:text-white'
+                            : 'text-white hover:bg-violet-800 hover:text-cyan-100'
                         }`
                       }
                     >
@@ -107,7 +107,7 @@ export function AppSidebar() {
                         `flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${
                           isActive
                             ? 'bg-cyan-400 text-violet-900 font-medium'
-                            : 'text-cyan-100 hover:bg-violet-800 hover:text-white'
+                            : 'text-white hover:bg-violet-800 hover:text-cyan-100'
                         }`
                       }
                     >
