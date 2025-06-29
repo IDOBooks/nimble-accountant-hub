@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { Plus, Upload, Search, Filter, Download } from 'lucide-react';
+import { Plus, Upload, Search, Filter, Download, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,9 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
+import { SimpleTransactionForm } from '@/components/SimpleTransactionForm';
 
 const mockTransactions = [
   {
@@ -91,7 +88,7 @@ export default function Transactions() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Transactions</h1>
-          <p className="text-slate-600 mt-1">Manage your income and expense entries</p>
+          <p className="text-slate-600 mt-1">Easily record your business income and expenses</p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" className="gap-2">
@@ -104,19 +101,69 @@ export default function Transactions() {
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-                <Plus className="h-4 w-4" />
-                New Transaction
+              <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700 shadow-lg">
+                <Sparkles className="h-4 w-4" />
+                Add Transaction
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Add New Transaction</DialogTitle>
+                <DialogTitle className="text-2xl font-bold text-center text-slate-900">
+                  Record a New Transaction
+                </DialogTitle>
               </DialogHeader>
-              <TransactionForm onClose={() => setIsDialogOpen(false)} />
+              <SimpleTransactionForm onClose={() => setIsDialogOpen(false)} />
             </DialogContent>
           </Dialog>
         </div>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-green-800">This Month</p>
+                <p className="text-2xl font-bold text-green-900">£8,950</p>
+                <p className="text-xs text-green-600">Money In</p>
+              </div>
+              <div className="h-12 w-12 bg-green-500 rounded-full flex items-center justify-center">
+                <Plus className="h-6 w-6 text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-r from-red-50 to-red-100 border-red-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-red-800">This Month</p>
+                <p className="text-2xl font-bold text-red-900">£3,250</p>
+                <p className="text-xs text-red-600">Money Out</p>
+              </div>
+              <div className="h-12 w-12 bg-red-500 rounded-full flex items-center justify-center">
+                <Download className="h-6 w-6 text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-blue-800">Net Profit</p>
+                <p className="text-2xl font-bold text-blue-900">£5,700</p>
+                <p className="text-xs text-blue-600">This Month</p>
+              </div>
+              <div className="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Search and Filters */}
@@ -138,8 +185,8 @@ export default function Transactions() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="income">Income</SelectItem>
-                <SelectItem value="expense">Expense</SelectItem>
+                <SelectItem value="income">Money In</SelectItem>
+                <SelectItem value="expense">Money Out</SelectItem>
               </SelectContent>
             </Select>
             <Button variant="outline" className="gap-2">
@@ -162,7 +209,7 @@ export default function Transactions() {
                 <tr className="border-b">
                   <th className="text-left py-3 px-4 font-medium text-slate-600">Date</th>
                   <th className="text-left py-3 px-4 font-medium text-slate-600">Description</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Account</th>
+                  <th className="text-left py-3 px-4 font-medium text-slate-600">Category</th>
                   <th className="text-left py-3 px-4 font-medium text-slate-600">Type</th>
                   <th className="text-right py-3 px-4 font-medium text-slate-600">Amount</th>
                   <th className="text-right py-3 px-4 font-medium text-slate-600">VAT</th>
@@ -177,7 +224,7 @@ export default function Transactions() {
                     <td className="py-3 px-4 text-slate-600">{transaction.account}</td>
                     <td className="py-3 px-4">
                       <Badge variant={transaction.type === 'Income' ? 'default' : 'destructive'}>
-                        {transaction.type}
+                        {transaction.type === 'Income' ? 'Money In' : 'Money Out'}
                       </Badge>
                     </td>
                     <td className="py-3 px-4 text-right font-medium text-slate-900">
@@ -197,103 +244,5 @@ export default function Transactions() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function TransactionForm({ onClose }: { onClose: () => void }) {
-  return (
-    <form className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="date">Date</Label>
-          <Input type="date" id="date" defaultValue={new Date().toISOString().split('T')[0]} />
-        </div>
-        <div>
-          <Label htmlFor="type">Transaction Type</Label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="income">Income</SelectItem>
-              <SelectItem value="expense">Expense</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="description">Description</Label>
-        <Input id="description" placeholder="Enter transaction description" />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="account">Account</Label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Select account" />
-            </SelectTrigger>
-            <SelectContent>
-              {accountTypes.map((account) => (
-                <SelectItem key={account} value={account}>
-                  {account}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="amount">Amount (£)</Label>
-          <Input type="number" id="amount" placeholder="0.00" step="0.01" />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="vat">VAT Rate</Label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Select VAT rate" />
-            </SelectTrigger>
-            <SelectContent>
-              {vatRates.map((rate) => (
-                <SelectItem key={rate.value} value={rate.value}>
-                  {rate.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="reference">Reference</Label>
-          <Input id="reference" placeholder="Invoice/Receipt number" />
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea id="notes" placeholder="Additional notes (optional)" rows={3} />
-      </div>
-
-      <div className="flex items-center space-x-2">
-        <Checkbox id="recurring" />
-        <Label htmlFor="recurring">Set as recurring transaction</Label>
-      </div>
-
-      <div className="flex items-center space-x-2">
-        <Checkbox id="receipt" />
-        <Label htmlFor="receipt">Upload receipt/invoice</Label>
-      </div>
-
-      <div className="flex justify-end gap-3 pt-4">
-        <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
-          Save Transaction
-        </Button>
-      </div>
-    </form>
   );
 }
